@@ -103,7 +103,7 @@
     <!-- Filtres et recherche -->
     <div class="card shadow mb-4">
         <div class="card-body">
-            <form method="GET" action="{{ route('admin.products.index') }}" class="row g-3">
+            <form method="GET" action="{{ route('superadmin.products.index') }}" class="row g-3">
                 <div class="col-md-3">
                     <label for="search" class="form-label">Recherche</label>
                     <input type="text" class="form-control" id="search" name="search" value="{{ request('search') }}" placeholder="Nom, SKU, vendeur...">
@@ -190,7 +190,7 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('admin.vendors.show', $product->vendor->id) }}">
+                                <a href="{{ route('superadmin.vendors.show', $product->vendor->id) }}">
                                     {{ $product->vendor->vendor_type == 'individual' ? $product->vendor->display_name : $product->vendor->company_name }}
                                 </a>
                             </td>

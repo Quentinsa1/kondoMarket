@@ -10,12 +10,15 @@ class SuperAdminSeeder extends Seeder
 {
     public function run()
     {
-        User::create([
-            'name' => 'Super Admin',
-            'email' => 'admin@kondomarket.com',
-            'password' => Hash::make('kondoadmin'), // À changer après 
-            'role' => 'admin',
-            'email_verified_at' => now(),
-        ]);
+        User::updateOrCreate(
+    ['email' => 'admin@kondomarket.com'],
+    [
+        'name' => 'Super Admin',
+        'password' => Hash::make('kondoadmin'),
+        'role' => 'super_admin',
+        'email_verified_at' => now(),
+        'is_active' => true,
+    ]
+);
     }
 }

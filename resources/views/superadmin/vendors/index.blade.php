@@ -103,7 +103,7 @@
     <!-- Filtres et recherche -->
     <div class="card shadow mb-4">
         <div class="card-body">
-            <form method="GET" action="{{ route('admin.vendors.index') }}" class="row g-3">
+            <form method="GET" action="{{ route('superadmin.vendors.index') }}" class="row g-3">
                 <div class="col-md-4">
                     <label for="search" class="form-label">Recherche</label>
                     <input type="text" class="form-control" id="search" name="search" value="{{ request('search') }}" placeholder="Nom, email, téléphone...">
@@ -192,10 +192,10 @@
                             </td>
                             <td>{{ $vendor->created_at->format('d/m/Y') }}</td>
                             <td>
-                                <a href="{{ route('admin.vendors.show', $vendor->id) }}" class="btn btn-sm btn-primary" title="Voir">
+                                <a href="{{ route('superadmin.vendors.show', $vendor->id) }}" class="btn btn-sm btn-primary" title="Voir">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <form action="{{ route('admin.vendors.destroy', $vendor->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer ce vendeur ?');">
+                                <form action="{{ route('superadmin.vendors.destroy', $vendor->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer ce vendeur ?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger" title="Supprimer">

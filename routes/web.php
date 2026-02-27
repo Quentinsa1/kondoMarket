@@ -10,29 +10,36 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\superAdmin\DashboardController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\VendorController as AdminVendorController;
-use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\superAdmin\VendorController as AdminVendorController;
+use App\Http\Controllers\superAdmin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 
-
-Route::middleware(['auth'])
-    ->prefix('admin')
-    ->name('admin.')
+Route::middleware(['auth','role:super_admin'])
+    ->prefix('superadmin')
+    ->name('superadmin.')
     ->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
- // Gestion des vendeurs
-    Route::resource('vendors', AdminVendorController::class)->except(['create', 'store', 'edit']);
-    Route::post('vendors/{id}/status', [AdminVendorController::class, 'updateStatus'])->name('vendors.status');
 
-     // Gestion des produits
-    Route::resource('products', AdminProductController::class)->except(['create', 'store', 'edit']);
-    Route::post('products/{id}/status', [AdminProductController::class, 'updateStatus'])->name('products.status');
+Route::resource('admins', \App\Http\Controllers\SuperAdmin\AdminController::class)
+    ->except(['show', 'edit', 'update']);
+Route::get('admins/{id}/activities', [\App\Http\Controllers\SuperAdmin\AdminController::class, 'activities'])
+    ->name('admins.activities');
+Route::post('admins/{id}/toggle-status', [\App\Http\Controllers\SuperAdmin\AdminController::class, 'toggleStatus'])
+    ->name('admins.toggle-status');
+
+        // Gestion vendeurs
+        Route::resource('vendors', AdminVendorController::class)->except(['create','store','edit']);
+        Route::post('vendors/{id}/status', [AdminVendorController::class, 'updateStatus'])->name('vendors.status');
+
+        // Gestion produits
+        Route::resource('products', AdminProductController::class)->except(['create','store','edit']);
+        Route::post('products/{id}/status', [AdminProductController::class, 'updateStatus'])->name('products.status');
     });
-
 
 // Route d'accueil avec toutes les sections
 Route::get('/', [HomeController::class, 'index'])->name('home');

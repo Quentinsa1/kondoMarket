@@ -1,91 +1,106 @@
-@extends('template.template')
-
-@section('title')
-    @yield('page-title', 'Super Admin - KondoMarket')
-@endsection
-
-@section('navbar')
-    @include('admin.partials.admin-header')
-@endsection
-
-@section('content')
-<div class="container-fluid px-0">
-    <div class="d-flex">
-        <!-- Sidebar -->
-        @include('admin.partials.sidebar')
-
-        <!-- Main Content Area -->
-        <main class="flex-grow-1 p-4" style="background-color: var(--light-color); min-height: calc(100vh - 80px);">
-            @yield('admin-content')
-        </main>
-    </div>
-</div>
-@endsection
-
-@push('styles')
-    <!-- DataTables and Select2 (already in template, but ensure they are loaded) -->
-    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
-    <!-- Chart.js (optional) -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>@yield('page-title', 'Administration - KondoMarket')</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        /* Ajustements supplémentaires si nécessaire */
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Inter', sans-serif;
+        }
         .sidebar {
-            width: 260px;
-            background-color: white;
-            border-right: 1px solid var(--gray-light);
-            box-shadow: var(--shadow-sm);
-        }
-        .sidebar .nav-link {
-            color: var(--secondary-color);
-            padding: 0.75rem 1.5rem;
-            font-weight: 500;
-            border-radius: 0;
-            transition: var(--transition);
-        }
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background-color: rgba(245, 158, 66, 0.1);
-            color: var(--accent-color);
-        }
-        .sidebar .nav-link i {
-            margin-right: 10px;
-            font-size: 1.2rem;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            width: 250px;
         }
         .sidebar-heading {
-            padding: 1.5rem 1.5rem 1rem;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            border-bottom: 1px solid var(--gray-light);
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 20px 20px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        .sidebar-heading small {
+            font-size: 0.8rem;
+            font-weight: 400;
+            opacity: 0.7;
+            display: block;
+        }
+        .nav-link {
+            color: rgba(255,255,255,0.7);
+            padding: 12px 20px;
+            margin: 4px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
         }
         .stat-card {
-            border: none;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            transition: var(--transition);
+            border-left: 4px solid;
+            transition: transform 0.2s;
         }
         .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-5px);
         }
-        .stat-card .card-body {
-            padding: 1.5rem;
-        }
-        .border-left-primary { border-left: 4px solid var(--primary-color); }
-        .border-left-success { border-left: 4px solid #28a745; }
-        .border-left-info    { border-left: 4px solid #17a2b8; }
-        .border-left-warning { border-left: 4px solid #ffc107; }
-        .border-left-danger  { border-left: 4px solid #dc3545; }
-        .border-left-secondary { border-left: 4px solid #6c757d; }
+        .border-left-primary { border-left-color: #4e73df; }
+        .border-left-success { border-left-color: #1cc88a; }
+        .border-left-info    { border-left-color: #36b9cc; }
+        .border-left-warning { border-left-color: #f6c23e; }
+        .border-left-danger  { border-left-color: #e74a3b; }
+        .text-gray-300 { color: #dddfeb; }
     </style>
-@endpush
+    @stack('admin-styles')
+</head>
+<body>
+    <div class="sidebar shadow">
+        <div class="sidebar-heading text-center">
+            KondoMarket<br><small>Admin</small>
+        </div>
+        <nav class="nav flex-column mt-3">
+            <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a class="nav-link {{ request()->routeIs('admin.vendors.*') ? 'active' : '' }}" href="{{ route('admin.vendors.index') }}">
+                <i class="bi bi-shop"></i> Vendeurs
+            </a>
+            <a class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
+                <i class="bi bi-box"></i> Produits
+            </a>
+            <a class="nav-link" href="#">
+                <i class="bi bi-credit-card"></i> Commandes
+            </a>
+            <a class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" href="{{ route('admin.reports.index') }}">
+                <i class="bi bi-shield-exclamation"></i> Signalements
+            </a>
+            <a class="nav-link" href="#">
+                <i class="bi bi-gear"></i> Paramètres
+            </a>
+        </nav>
+    </div>
 
-@push('scripts')
-    <!-- jQuery, Bootstrap, DataTables, Chart.js, Select2 (already in template, but ensure order) -->
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <div class="main-content">
+        @yield('admin-content')
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     @stack('admin-scripts')
-@endpush
+</body>
+</html>
