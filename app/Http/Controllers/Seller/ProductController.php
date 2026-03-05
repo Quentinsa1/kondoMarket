@@ -237,7 +237,7 @@ class ProductController extends Controller
 
         $product->load(['category', 'subcategory', 'tags', 'attributes', 'variants']);
         
-        return view('seller.products.show', compact('product'));
+        return view('vendor.products.show', compact('product'));
     }
 
     /**
@@ -256,7 +256,7 @@ class ProductController extends Controller
         
         $product->load(['tags', 'attributes', 'variants']);
         
-        return view('seller.products.edit', compact('product', 'categories', 'attributes', 'tags'));
+        return view('vendor.products.edit', compact('product', 'categories', 'attributes', 'tags'));
     }
 
     /**

@@ -5,45 +5,63 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Vendor;
 use App\Models\Product;
-use App\Models\Order;
-use App\Models\Report;
 use Illuminate\Http\Request;
 
 class AdminDashboardController extends Controller
 {
     public function index()
     {
-        // Statistiques clés
-        $stats = [
-            'total_vendors'      => Vendor::count(),
-            'pending_vendors'    => Vendor::where('status', 'pending_review')->count(),
-            'approved_vendors'   => Vendor::where('status', 'approved')->count(),
-            'suspended_vendors'  => Vendor::where('status', 'suspended')->count(),
-            'total_products'     => Product::count(),
-            'active_products'    => Product::where('status', 'active')->count(),
-            'inactive_products'  => Product::where('status', 'inactive')->count(),
-            'orders_today'       => Order::whereDate('created_at', today())->count(),
-            'total_orders'       => Order::count(),
-            'total_revenue'      => Order::where('status', 'completed')->sum('total_amount') ?? 0,
-            'pending_reports'    => Report::where('status', 'pending')->count(),
-        ];
+        $vendors = Vendor::latest()->paginate(10);
+        $products = Product::latest()->paginate(10);
 
-        // Activités récentes
-        $recent_vendors = Vendor::with('user')
-            ->latest()
-            ->take(5)
-            ->get();
+        return view('admin.dashboard.index', compact('vendors', 'products'));
+    }
 
-        $recent_reports = Report::with('reporter')
-            ->latest()
-            ->take(5)
-            ->get();
+    /**
+     * Valider un vendeur
+     */
+    public function approveVendor($id)
+    {
+        $vendor = Vendor::findOrFail($id);
+        $vendor->status = 'approved';
+        $vendor->save();
 
-        $recent_orders = Order::with('vendor')
-            ->latest()
-            ->take(5)
-            ->get();
+        return redirect()->back()->with('success', 'Vendeur approuvé avec succès.');
+    }
 
-        return view('admin.dashboard.index', compact('stats', 'recent_vendors', 'recent_reports', 'recent_orders'));
+    /**
+     * Rejeter un vendeur
+     */
+    public function rejectVendor($id)
+    {
+        $vendor = Vendor::findOrFail($id);
+        $vendor->status = 'rejected';
+        $vendor->save();
+
+        return redirect()->back()->with('success', 'Vendeur rejeté.');
+    }
+
+    /**
+     * Valider un produit
+     */
+    public function approveProduct($id)
+    {
+        $product = Product::findOrFail($id);
+        $product->status = 'approved';
+        $product->save();
+
+        return redirect()->back()->with('success', 'Produit approuvé.');
+    }
+
+    /**
+     * Rejeter un produit
+     */
+    public function rejectProduct($id)
+    {
+        $product = Product::findOrFail($id);
+        $product->status = 'rejected';
+        $product->save();
+
+        return redirect()->back()->with('success', 'Produit rejeté.');
     }
 }

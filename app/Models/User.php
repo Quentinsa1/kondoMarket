@@ -18,11 +18,15 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-         'role',
-    ];
+    'name',
+    'email',
+    'password',
+    'role',
+    'last_login_at',
+    'last_login_ip',
+    'is_active',
+    'last_seen',
+];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -39,10 +43,12 @@ class User extends Authenticatable
      *
      * @var array<string, string>
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
+   protected $casts = [
+    'email_verified_at' => 'datetime',
+    'password' => 'hashed',
+    'last_login_at' => 'datetime',   // ← ajoute cette ligne
+    'last_seen' => 'datetime',       // (optionnel)
+];
     public function vendor()
 {
     return $this->hasOne(Vendor::class);

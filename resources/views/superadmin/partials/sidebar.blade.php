@@ -28,8 +28,13 @@
         <a class="nav-link" href="#">
             <i class="bi bi-bell"></i> Notifications
         </a>
-        <a class="nav-link" href="#">
-            <i class="bi bi-gear"></i> Paramètres
-        </a>
+        <hr class="text-gray-300 mx-3">
+
+<form method="POST" action="{{ route('logout') }}" class="mx-3">
+    @csrf
+    <button type="submit" class="nav-link border-0 bg-transparent w-100 text-start">
+        <i class="bi bi-box-arrow-right"></i> Déconnexion
+    </button>
+</form>
     </nav>
 </div>

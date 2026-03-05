@@ -78,7 +78,7 @@ class ProductController extends Controller
         $vendors = Vendor::orderBy('created_at', 'desc')->get(['id', 'display_name', 'company_name', 'vendor_type']);
         $categories = Category::orderBy('name')->get(['id', 'name']);
 
-        return view('admin.products.index', compact('products', 'stats', 'vendors', 'categories'));
+        return view('superadmin.products.index', compact('products', 'stats', 'vendors', 'categories'));
     }
 
     /**
@@ -87,7 +87,7 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::with(['vendor', 'category', 'subcategory', 'variants'])->findOrFail($id);
-        return view('admin.products.show', compact('product'));
+        return view('superadmin.products.show', compact('product'));
     }
 
     /**
@@ -109,7 +109,7 @@ class ProductController extends Controller
         }
         $product->delete();
 
-        return redirect()->route('admin.products.index')
+        return redirect()->route('superadmin.products.index')
             ->with('success', 'Produit supprimé avec succès.');
     }
 

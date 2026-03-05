@@ -1,4 +1,4 @@
-@extends('admin.layouts.admin')
+@extends('superadmin.layouts.admin')
 
 @section('page-title', 'Gestion des produits - KondoMarket')
 

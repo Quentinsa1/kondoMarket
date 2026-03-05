@@ -180,18 +180,85 @@
                                                placeholder="●●●●●●●●" required>
                                     </div>
                                     
+                                    <!-- === PAYS : LISTE COMPLÈTE === -->
                                     <div class="col-md-6 mb-3">
                                         <label for="country" class="form-label">
                                             <strong>Pays *</strong>
                                         </label>
                                         <select class="form-select @error('country') is-invalid @enderror" id="country" name="country" required>
                                             <option value="">Sélectionnez un pays</option>
-                                            <option value="FR" {{ old('country') == 'FR' ? 'selected' : 'selected' }}>France</option>
-                                            <option value="BE" {{ old('country') == 'BE' ? 'selected' : '' }}>Belgique</option>
-                                            <option value="CH" {{ old('country') == 'CH' ? 'selected' : '' }}>Suisse</option>
-                                            <option value="DE" {{ old('country') == 'DE' ? 'selected' : '' }}>Allemagne</option>
-                                            <option value="ES" {{ old('country') == 'ES' ? 'selected' : '' }}>Espagne</option>
-                                            <option value="IT" {{ old('country') == 'IT' ? 'selected' : '' }}>Italie</option>
+                                            @php
+                                                $countries = [
+                                                    'AF' => 'Afghanistan', 'ZA' => 'Afrique du Sud', 'AL' => 'Albanie', 'DZ' => 'Algérie',
+                                                    'DE' => 'Allemagne', 'AD' => 'Andorre', 'AO' => 'Angola', 'AI' => 'Anguilla',
+                                                    'AQ' => 'Antarctique', 'AG' => 'Antigua-et-Barbuda', 'SA' => 'Arabie saoudite',
+                                                    'AR' => 'Argentine', 'AM' => 'Arménie', 'AW' => 'Aruba', 'AU' => 'Australie',
+                                                    'AT' => 'Autriche', 'AZ' => 'Azerbaïdjan', 'BS' => 'Bahamas', 'BH' => 'Bahreïn',
+                                                    'BD' => 'Bangladesh', 'BB' => 'Barbade', 'BY' => 'Biélorussie', 'BE' => 'Belgique',
+                                                    'BZ' => 'Belize', 'BJ' => 'Bénin', 'BM' => 'Bermudes', 'BT' => 'Bhoutan',
+                                                    'BO' => 'Bolivie', 'BA' => 'Bosnie-Herzégovine', 'BW' => 'Botswana', 'BR' => 'Brésil',
+                                                    'BN' => 'Brunéi Darussalam', 'BG' => 'Bulgarie', 'BF' => 'Burkina Faso', 'BI' => 'Burundi',
+                                                    'KH' => 'Cambodge', 'CM' => 'Cameroun', 'CA' => 'Canada', 'CV' => 'Cap-Vert',
+                                                    'CL' => 'Chili', 'CN' => 'Chine', 'CY' => 'Chypre', 'CO' => 'Colombie',
+                                                    'KM' => 'Comores', 'CG' => 'Congo-Brazzaville', 'CD' => 'Congo-Kinshasa', 'KP' => 'Corée du Nord',
+                                                    'KR' => 'Corée du Sud', 'CR' => 'Costa Rica', 'CI' => 'Côte d’Ivoire', 'HR' => 'Croatie',
+                                                    'CU' => 'Cuba', 'CW' => 'Curaçao', 'DK' => 'Danemark', 'DJ' => 'Djibouti',
+                                                    'DM' => 'Dominique', 'EG' => 'Égypte', 'AE' => 'Émirats arabes unis', 'EC' => 'Équateur',
+                                                    'ER' => 'Érythrée', 'ES' => 'Espagne', 'EE' => 'Estonie', 'SZ' => 'Eswatini',
+                                                    'US' => 'États-Unis', 'ET' => 'Éthiopie', 'FJ' => 'Fidji', 'FI' => 'Finlande',
+                                                    'FR' => 'France', 'GA' => 'Gabon', 'GM' => 'Gambie', 'GE' => 'Géorgie',
+                                                    'GH' => 'Ghana', 'GI' => 'Gibraltar', 'GR' => 'Grèce', 'GD' => 'Grenade',
+                                                    'GL' => 'Groenland', 'GP' => 'Guadeloupe', 'GU' => 'Guam', 'GT' => 'Guatemala',
+                                                    'GG' => 'Guernesey', 'GN' => 'Guinée', 'GQ' => 'Guinée équatoriale', 'GW' => 'Guinée-Bissau',
+                                                    'GY' => 'Guyana', 'GF' => 'Guyane française', 'HT' => 'Haïti', 'HN' => 'Honduras',
+                                                    'HU' => 'Hongrie', 'BV' => 'Île Bouvet', 'CX' => 'Île Christmas', 'IM' => 'Île de Man',
+                                                    'NF' => 'Île Norfolk', 'KY' => 'Îles Caïmans', 'CC' => 'Îles Cocos', 'CK' => 'Îles Cook',
+                                                    'AX' => 'Îles d\'Åland', 'FO' => 'Îles Féroé', 'HM' => 'Îles Heard-et-MacDonald',
+                                                    'FK' => 'Îles Malouines', 'MP' => 'Îles Mariannes du Nord', 'MH' => 'Îles Marshall',
+                                                    'PN' => 'Îles Pitcairn', 'SB' => 'Îles Salomon', 'TC' => 'Îles Turques-et-Caïques',
+                                                    'VG' => 'Îles Vierges britanniques', 'VI' => 'Îles Vierges des États-Unis', 'IN' => 'Inde',
+                                                    'ID' => 'Indonésie', 'IQ' => 'Irak', 'IR' => 'Iran', 'IE' => 'Irlande',
+                                                    'IS' => 'Islande', 'IL' => 'Israël', 'IT' => 'Italie', 'JM' => 'Jamaïque',
+                                                    'JP' => 'Japon', 'JE' => 'Jersey', 'JO' => 'Jordanie', 'KZ' => 'Kazakhstan',
+                                                    'KE' => 'Kenya', 'KG' => 'Kirghizistan', 'KI' => 'Kiribati', 'KW' => 'Koweït',
+                                                    'RE' => 'La Réunion', 'LA' => 'Laos', 'LS' => 'Lesotho', 'LV' => 'Lettonie',
+                                                    'LB' => 'Liban', 'LR' => 'Liberia', 'LY' => 'Libye', 'LI' => 'Liechtenstein',
+                                                    'LT' => 'Lituanie', 'LU' => 'Luxembourg', 'MK' => 'Macédoine du Nord', 'MG' => 'Madagascar',
+                                                    'MY' => 'Malaisie', 'MW' => 'Malawi', 'MV' => 'Maldives', 'ML' => 'Mali',
+                                                    'MT' => 'Malte', 'MA' => 'Maroc', 'MQ' => 'Martinique', 'MU' => 'Maurice',
+                                                    'MR' => 'Mauritanie', 'YT' => 'Mayotte', 'MX' => 'Mexique', 'FM' => 'Micronésie',
+                                                    'MD' => 'Moldavie', 'MC' => 'Monaco', 'MN' => 'Mongolie', 'ME' => 'Monténégro',
+                                                    'MS' => 'Montserrat', 'MZ' => 'Mozambique', 'MM' => 'Myanmar', 'NA' => 'Namibie',
+                                                    'NR' => 'Nauru', 'NP' => 'Népal', 'NI' => 'Nicaragua', 'NE' => 'Niger',
+                                                    'NG' => 'Nigéria', 'NU' => 'Niue', 'NO' => 'Norvège', 'NC' => 'Nouvelle-Calédonie',
+                                                    'NZ' => 'Nouvelle-Zélande', 'OM' => 'Oman', 'UG' => 'Ouganda', 'UZ' => 'Ouzbékistan',
+                                                    'PK' => 'Pakistan', 'PW' => 'Palaos', 'PA' => 'Panama', 'PG' => 'Papouasie-Nouvelle-Guinée',
+                                                    'PY' => 'Paraguay', 'NL' => 'Pays-Bas', 'PE' => 'Pérou', 'PH' => 'Philippines',
+                                                    'PL' => 'Pologne', 'PF' => 'Polynésie française', 'PR' => 'Porto Rico', 'PT' => 'Portugal',
+                                                    'QA' => 'Qatar', 'HK' => 'R.A.S. chinoise de Hong Kong', 'MO' => 'R.A.S. chinoise de Macao',
+                                                    'CF' => 'République centrafricaine', 'DO' => 'République dominicaine', 'RO' => 'Roumanie',
+                                                    'GB' => 'Royaume-Uni', 'RU' => 'Russie', 'RW' => 'Rwanda', 'EH' => 'Sahara occidental',
+                                                    'BL' => 'Saint-Barthélemy', 'KN' => 'Saint-Christophe-et-Niévès', 'SM' => 'Saint-Marin',
+                                                    'MF' => 'Saint-Martin', 'SX' => 'Saint-Martin (partie néerlandaise)', 'PM' => 'Saint-Pierre-et-Miquelon',
+                                                    'VA' => 'Saint-Siège', 'VC' => 'Saint-Vincent-et-les-Grenadines', 'SH' => 'Sainte-Hélène',
+                                                    'LC' => 'Sainte-Lucie', 'SV' => 'Salvador', 'WS' => 'Samoa', 'AS' => 'Samoa américaines',
+                                                    'ST' => 'Sao Tomé-et-Principe', 'SN' => 'Sénégal', 'RS' => 'Serbie', 'SC' => 'Seychelles',
+                                                    'SL' => 'Sierra Leone', 'SG' => 'Singapour', 'SK' => 'Slovaquie', 'SI' => 'Slovénie',
+                                                    'SO' => 'Somalie', 'SD' => 'Soudan', 'SS' => 'Soudan du Sud', 'LK' => 'Sri Lanka',
+                                                    'SE' => 'Suède', 'CH' => 'Suisse', 'SR' => 'Suriname', 'SJ' => 'Svalbard et Jan Mayen',
+                                                    'SY' => 'Syrie', 'TJ' => 'Tadjikistan', 'TW' => 'Taïwan', 'TZ' => 'Tanzanie',
+                                                    'TD' => 'Tchad', 'CZ' => 'Tchéquie', 'TF' => 'Terres australes françaises',
+                                                    'IO' => 'Territoire britannique de l\'océan Indien', 'PS' => 'Territoires palestiniens',
+                                                    'TH' => 'Thaïlande', 'TL' => 'Timor oriental', 'TG' => 'Togo', 'TK' => 'Tokelau',
+                                                    'TO' => 'Tonga', 'TT' => 'Trinité-et-Tobago', 'TN' => 'Tunisie', 'TM' => 'Turkménistan',
+                                                    'TR' => 'Turquie', 'TV' => 'Tuvalu', 'UA' => 'Ukraine', 'UY' => 'Uruguay',
+                                                    'VU' => 'Vanuatu', 'VE' => 'Venezuela', 'VN' => 'Vietnam', 'WF' => 'Wallis-et-Futuna',
+                                                    'YE' => 'Yémen', 'ZM' => 'Zambie', 'ZW' => 'Zimbabwe'
+                                                ];
+                                            @endphp
+                                            @foreach($countries as $code => $name)
+                                                <option value="{{ $code }}" {{ old('country') == $code ? 'selected' : '' }}>{{ $name }}</option>
+                                            @endforeach
                                         </select>
                                         @error('country')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -274,6 +341,25 @@
                                             <div class="form-text">Format: JPG, PNG, max 2MB</div>
                                         </div>
                                     </div>
+
+                                    <!-- === NOUVEAU CHAMP : PIÈCE D'IDENTITÉ OBLIGATOIRE === -->
+                                    <div class="col-md-6 mb-3">
+                                        <div class="upload-card">
+                                            <label class="form-label">
+                                                <strong>Pièce d'identité / Passeport *</strong>
+                                            </label>
+                                            <div class="upload-area" id="idDocumentUpload">
+                                                <i class="bi bi-card-image"></i>
+                                                <p>Téléchargez votre pièce d'identité</p>
+                                                <p class="text-muted">ou <span class="text-primary">parcourir</span></p>
+                                                <input type="file" id="idDocumentFile" name="id_document" accept="image/*,application/pdf" required>
+                                            </div>
+                                            <div class="form-text">Formats acceptés : JPG, PNG, PDF (max 5 Mo)</div>
+                                            @error('id_document')
+                                                <div class="text-danger small mt-1">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -338,18 +424,7 @@
                                         @enderror
                                     </div>
                                     
-                                    <div class="col-md-6 mb-3">
-                                        <label for="siret" class="form-label">
-                                            <strong>Numéro SIRET (optionnel)</strong>
-                                        </label>
-                                        <input type="text" class="form-control @error('siret') is-invalid @enderror" 
-                                               id="siret" name="siret" 
-                                               value="{{ old('siret') }}" 
-                                               placeholder="123 456 789 00012">
-                                        @error('siret')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                                    <!-- === CHAMP SIRET SUPPRIMÉ === -->
                                     
                                     <div class="col-md-6 mb-3">
                                         <div class="upload-card">
@@ -444,7 +519,11 @@
                                     <div class="stat">
                                         <i class="bi bi-geo-alt"></i>
                                         <span id="previewLocation">
-                                            {{ old('city', 'Ville') }}, {{ old('country') == 'FR' ? 'France' : 'Pays' }}
+                                            {{ old('city', 'Ville') }}, 
+                                            @php
+                                                $countryName = $countries[old('country')] ?? 'Pays';
+                                            @endphp
+                                            {{ $countryName }}
                                         </span>
                                     </div>
                                     <div class="stat">
@@ -717,27 +796,32 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewVendorType = document.getElementById('previewVendorType');
     
     vendorTypeRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            const vendorType = this.value;
-            vendorTypeInput.value = vendorType;
-            
-            // Afficher/masquer les champs spécifiques
-            if (vendorType === 'individual') {
-                individualFields.style.display = 'block';
-                companyFields.style.display = 'none';
-                previewVendorType.innerHTML = '<span class="badge bg-info">Particulier</span>';
-                updatePreviewDescription();
-            } else {
-                individualFields.style.display = 'none';
-                companyFields.style.display = 'block';
-                previewVendorType.innerHTML = '<span class="badge bg-success">Entreprise</span>';
-                updatePreviewDescription();
-            }
-            
-            // Mettre à jour les étapes de progression
-            updateProgressSteps(2);
-        });
+    radio.addEventListener('change', function() {
+        const vendorType = this.value;
+        vendorTypeInput.value = vendorType;
+
+        const idDocumentInput = document.getElementById('idDocumentFile');
+
+        if (vendorType === 'individual') {
+            individualFields.style.display = 'block';
+            companyFields.style.display = 'none';
+
+            idDocumentInput.setAttribute('required', 'required');
+
+            previewVendorType.innerHTML = '<span class="badge bg-info">Particulier</span>';
+        } else {
+            individualFields.style.display = 'none';
+            companyFields.style.display = 'block';
+
+            idDocumentInput.removeAttribute('required');
+
+            previewVendorType.innerHTML = '<span class="badge bg-success">Entreprise</span>';
+        }
+
+        updatePreviewDescription();
+        updateProgressSteps(2);
     });
+});
     
     // Mise à jour de l'aperçu en temps réel
     const fullNameInput = document.getElementById('full_name');
@@ -755,15 +839,36 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function updatePreviewLocation() {
         const city = cityInput.value || 'Ville';
-        const country = countrySelect.options[countrySelect.selectedIndex].text;
+        const country = countrySelect.options[countrySelect.selectedIndex]?.text || 'Pays';
         document.getElementById('previewLocation').textContent = city + ', ' + country;
     }
     
-    function updatePreviewDescription() {
-        const vendorType = vendorTypeInput.value;
-        if (vendorType === 'individual') {
-            const desc = descriptionInput.value || 'Description apparaîtra ici...';
-            document.getElementById('previewDescription').textContent = desc;
+   function updatePreviewDescription() {
+    const vendorType = vendorTypeInput.value;
+
+    if (vendorType === 'individual') {
+        const desc = descriptionInput.value || 'Description apparaîtra ici...';
+        document.getElementById('previewDescription').textContent = desc;
+    } else {
+        const desc = companyDescriptionInput.value || 'Description apparaîtra ici...';
+        document.getElementById('previewDescription').textContent = desc;
+    }
+}
+if (vendorType === 'individual') {
+    individualFields.style.display = 'block';
+    companyFields.style.display = 'none';
+
+    idDocumentInput.setAttribute('required', 'required');
+
+    previewVendorType.innerHTML = '<span class="badge bg-info">Particulier</span>';
+} else {
+    individualFields.style.display = 'none';
+    companyFields.style.display = 'block';
+
+    idDocumentInput.removeAttribute('required');
+
+    previewVendorType.innerHTML = '<span class="badge bg-success">Entreprise</span>';
+}            document.getElementById('previewDescription').textContent = desc;
         } else {
             const desc = companyDescriptionInput.value || 'Description apparaîtra ici...';
             document.getElementById('previewDescription').textContent = desc;
@@ -788,24 +893,32 @@ document.addEventListener('DOMContentLoaded', function() {
         fileInput.addEventListener('change', function(e) {
             if (e.target.files[0]) {
                 const file = e.target.files[0];
-                // Validation de la taille
-                if (file.size > 2 * 1024 * 1024 && !fileInputId.includes('cover')) {
-                    alert('Le fichier est trop volumineux. Maximum 2MB.');
-                    return;
-                }
-                if (fileInputId.includes('cover') && file.size > 5 * 1024 * 1024) {
-                    alert('Le fichier est trop volumineux. Maximum 5MB.');
+                // Validation de la taille (avec gestion spéciale pour les PDF ou images > 5Mo)
+                let maxSize = 2 * 1024 * 1024; // 2MB par défaut
+                if (fileInputId.includes('cover')) maxSize = 5 * 1024 * 1024;
+                if (fileInputId.includes('idDocument')) maxSize = 5 * 1024 * 1024;
+                
+                if (file.size > maxSize) {
+                    alert(`Le fichier est trop volumineux. Maximum ${maxSize / (1024*1024)}MB.`);
                     return;
                 }
                 
-                // Validation du type
-                const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                if (!validTypes.includes(file.type)) {
-                    alert('Format de fichier non supporté. Utilisez JPG, PNG ou GIF.');
-                    return;
+                // Validation du type pour la pièce d'identité (images + PDF)
+                if (fileInputId.includes('idDocument')) {
+                    const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+                    if (!validTypes.includes(file.type)) {
+                        alert('Format de fichier non supporté. Utilisez JPG, PNG ou PDF.');
+                        return;
+                    }
+                } else {
+                    const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                    if (!validTypes.includes(file.type)) {
+                        alert('Format de fichier non supporté. Utilisez JPG, PNG ou GIF.');
+                        return;
+                    }
                 }
                 
-                previewCallback(file);
+                if (previewCallback) previewCallback(file);
             }
         });
         
@@ -859,6 +972,17 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
         };
         reader.readAsDataURL(file);
+    });
+    
+    // Upload pour pièce d'identité (sans preview, juste validation)
+    setupFileUpload('idDocumentUpload', 'idDocumentFile', function(file) {
+        // Optionnel : afficher un message de confirmation
+        const uploadArea = document.getElementById('idDocumentUpload');
+        uploadArea.innerHTML = `
+            <i class="bi bi-check-circle-fill text-success"></i>
+            <p>Fichier sélectionné : ${file.name}</p>
+            <p class="text-muted small">Cliquez pour modifier</p>
+        `;
     });
     
     // Mise à jour des étapes de progression

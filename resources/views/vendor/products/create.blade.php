@@ -92,11 +92,11 @@
                                     <strong>Description courte</strong>
                                 </label>
                                 <textarea class="form-control" id="short_description" name="short_description" 
-                                          rows="2" maxlength="500" 
-                                          placeholder="Une brève description qui apparaîtra dans les listes de produits">{{ old('short_description') }}</textarea>
+                                          rows="2" maxlength="200" 
+                                          placeholder="Une brève description (max 200 caractères)">{{ old('short_description') }}</textarea>
                                 <div class="form-text d-flex justify-content-between">
-                                    <span>Maximum 500 caractères</span>
-                                    <span id="shortDescCount">0/500</span>
+                                    <span>Maximum 200 caractères</span>
+                                    <span id="shortDescCount">0/200</span>
                                 </div>
                             </div>
 
@@ -106,11 +106,11 @@
                                 </label>
                                 <textarea class="form-control" id="description" name="description" 
                                           rows="8" required 
-                                          placeholder="Décrivez votre produit en détail...">{{ old('description') }}</textarea>
+                                          placeholder="Décrivez votre produit en détail (max 500 mots)...">{{ old('description') }}</textarea>
                                 <div class="form-text">
                                     <div class="d-flex justify-content-between">
                                         <span>Utilisez des mots-clés pertinents</span>
-                                        <span id="descCount">0 caractères</span>
+                                        <span id="wordCount">0 / 500 mots</span>
                                     </div>
                                 </div>
                             </div>
@@ -164,7 +164,7 @@
                     <!-- Prix et stock -->
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0"><i class="bi bi-currency-euro"></i> Prix et stock</h5>
+                            <h5 class="mb-0"><i class="bi bi-currency-exchange"></i> Prix et stock (FCFA)</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -175,8 +175,8 @@
                                     <div class="input-group">
                                         <input type="number" class="form-control" id="price" name="price" 
                                                step="0.01" min="0" value="{{ old('price') }}" required 
-                                               placeholder="99.99">
-                                        <span class="input-group-text">€</span>
+                                               placeholder="9900">
+                                        <span class="input-group-text">FCFA</span>
                                     </div>
                                 </div>
 
@@ -187,22 +187,10 @@
                                     <div class="input-group">
                                         <input type="number" class="form-control" id="compare_price" 
                                                name="compare_price" step="0.01" min="0" 
-                                               value="{{ old('compare_price') }}" placeholder="149.99">
-                                        <span class="input-group-text">€</span>
+                                               value="{{ old('compare_price') }}" placeholder="14900">
+                                        <span class="input-group-text">FCFA</span>
                                     </div>
                                     <div class="form-text">Pour afficher un prix barré</div>
-                                </div>
-
-                                <div class="col-md-4 mb-3">
-                                    <label for="cost_price" class="form-label">
-                                        <strong>Prix de revient</strong>
-                                    </label>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control" id="cost_price" 
-                                               name="cost_price" step="0.01" min="0" 
-                                               value="{{ old('cost_price') }}" placeholder="70.00">
-                                        <span class="input-group-text">€</span>
-                                    </div>
                                 </div>
 
                                 <div class="col-md-4 mb-3">
@@ -212,8 +200,8 @@
                                     <div class="input-group">
                                         <input type="number" class="form-control" id="wholesale_price" 
                                                name="wholesale_price" step="0.01" min="0" 
-                                               value="{{ old('wholesale_price') }}" placeholder="85.00">
-                                        <span class="input-group-text">€</span>
+                                               value="{{ old('wholesale_price') }}" placeholder="8500">
+                                        <span class="input-group-text">FCFA</span>
                                     </div>
                                     <div class="form-text">Prix pour commande en gros</div>
                                 </div>
@@ -226,31 +214,6 @@
                                            name="stock_quantity" min="0" value="{{ old('stock_quantity', 0) }}" required>
                                 </div>
 
-                                <div class="col-md-4 mb-3">
-                                    <label for="alert_quantity" class="form-label">
-                                        <strong>Alerte de stock bas</strong>
-                                    </label>
-                                    <input type="number" class="form-control" id="alert_quantity" 
-                                           name="alert_quantity" min="0" value="{{ old('alert_quantity', 5) }}">
-                                    <div class="form-text">Recevez une alerte quand le stock atteint ce niveau</div>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="sku" class="form-label">
-                                        <strong>SKU (Référence)</strong>
-                                    </label>
-                                    <input type="text" class="form-control" id="sku" name="sku" 
-                                           value="{{ old('sku') }}" placeholder="IPHONE-13-PRO-256">
-                                    <div class="form-text">Stock Keeping Unit - Identifiant unique</div>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="barcode" class="form-label">
-                                        <strong>Code-barres</strong>
-                                    </label>
-                                    <input type="text" class="form-control" id="barcode" name="barcode" 
-                                           value="{{ old('barcode') }}" placeholder="123456789012">
-                                </div>
 
                                 <div class="col-md-4 mb-3">
                                     <label for="min_quantity" class="form-label">
@@ -261,37 +224,6 @@
                                     <div class="form-text">Quantité minimum par commande</div>
                                 </div>
 
-                                <div class="col-md-8 mb-3">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-check mb-2">
-                                                <input class="form-check-input" type="checkbox" 
-                                                       name="manage_stock" id="manage_stock" value="1" checked>
-                                                <label class="form-check-label" for="manage_stock">
-                                                    Gérer le stock
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-check mb-2">
-                                                <input class="form-check-input" type="checkbox" 
-                                                       name="allow_backorder" id="allow_backorder" value="1">
-                                                <label class="form-check-label" for="allow_backorder">
-                                                    Autoriser les commandes en attente
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-check mb-2">
-                                                <input class="form-check-input" type="checkbox" 
-                                                       name="low_stock_notification" id="low_stock_notification" value="1" checked>
-                                                <label class="form-check-label" for="low_stock_notification">
-                                                    Notification stock bas
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -461,8 +393,8 @@
                                 <div class="input-group">
                                     <input type="number" class="form-control" id="shipping_cost" 
                                            name="shipping_cost" step="0.01" min="0" 
-                                           value="{{ old('shipping_cost') }}" placeholder="5.99">
-                                    <span class="input-group-text">€</span>
+                                           value="{{ old('shipping_cost') }}" placeholder="599">
+                                    <span class="input-group-text">FCFA</span>
                                 </div>
                                 <div class="form-text">Laissez vide pour les frais standard</div>
                             </div>
@@ -897,30 +829,48 @@ document.addEventListener('DOMContentLoaded', function() {
         previewGallery(files);
     }
 
-    // Compteur de caractères pour la description courte
+    // Compteur de caractères pour la description courte (200 max)
     const shortDescTextarea = document.getElementById('short_description');
     const shortDescCount = document.getElementById('shortDescCount');
 
     shortDescTextarea.addEventListener('input', function() {
         const count = this.value.length;
-        shortDescCount.textContent = `${count}/500`;
+        shortDescCount.textContent = `${count}/200`;
         
-        if (count > 500) {
-            this.value = this.value.substring(0, 500);
-            shortDescCount.textContent = '500/500';
+        if (count > 200) {
+            this.value = this.value.substring(0, 200);
+            shortDescCount.textContent = '200/200';
             shortDescCount.classList.add('text-danger');
         } else {
             shortDescCount.classList.remove('text-danger');
         }
     });
 
-    // Compteur de caractères pour la description détaillée
+    // Compteur de mots pour la description détaillée (500 mots max)
     const descTextarea = document.getElementById('description');
-    const descCount = document.getElementById('descCount');
+    const wordCountSpan = document.getElementById('wordCount');
+
+    function countWords(text) {
+        return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+    }
 
     descTextarea.addEventListener('input', function() {
-        const count = this.value.length;
-        descCount.textContent = `${count} caractères`;
+        const text = this.value;
+        const wordCount = countWords(text);
+        wordCountSpan.textContent = `${wordCount} / 500 mots`;
+
+        if (wordCount > 500) {
+            // Trouver l'index où dépasse 500 mots
+            const words = text.trim().split(/\s+/);
+            if (words.length > 500) {
+                const truncated = words.slice(0, 500).join(' ');
+                this.value = truncated;
+                wordCountSpan.textContent = '500 / 500 mots';
+            }
+            wordCountSpan.classList.add('text-danger');
+        } else {
+            wordCountSpan.classList.remove('text-danger');
+        }
     });
 
     // Gestion des spécifications techniques

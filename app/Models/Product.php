@@ -179,17 +179,17 @@ class Product extends Model
      * Relation avec les attributs
      */
     public function attributes()
-    {
-        return $this->belongsToMany(ProductAttribute::class, 'product_product_attribute');
-    }
+{
+    return $this->belongsToMany(ProductAttribute::class, 'product_product_attribute', 'product_id', 'attribute_id');
+}
 
     /**
      * Relation avec les tags
      */
-    public function tags()
-    {
-        return $this->belongsToMany(ProductTag::class, 'product_product_tag');
-    }
+   public function tags()
+{
+    return $this->belongsToMany(ProductTag::class, 'product_product_tag', 'product_id', 'tag_id');
+}
 
     /**
      * Relation avec les avis

@@ -50,8 +50,9 @@ class ProductAttribute extends Model
     /**
      * Relation avec les produits
      */
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'product_product_attribute');
-    }
+   // dans ProductAttribute.php
+public function products()
+{
+    return $this->belongsToMany(Product::class, 'product_product_attribute', 'attribute_id', 'product_id');
+}
 }

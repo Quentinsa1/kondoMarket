@@ -84,15 +84,21 @@
             <a class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
                 <i class="bi bi-box"></i> Produits
             </a>
-            <a class="nav-link" href="#">
-                <i class="bi bi-credit-card"></i> Commandes
-            </a>
+        
             <a class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" href="{{ route('admin.reports.index') }}">
                 <i class="bi bi-shield-exclamation"></i> Signalements
             </a>
             <a class="nav-link" href="#">
                 <i class="bi bi-gear"></i> Paramètres
             </a>
+            <hr class="text-gray-300 mx-3">
+
+<form method="POST" action="{{ route('logout') }}" class="mx-3">
+    @csrf
+    <button type="submit" class="nav-link border-0 bg-transparent w-100 text-start">
+        <i class="bi bi-box-arrow-right"></i> Déconnexion
+    </button>
+</form>
         </nav>
     </div>
 

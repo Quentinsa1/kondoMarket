@@ -1,45 +1,38 @@
 <?php
+namespace App\Http\Controllers\Admin;
 
-namespace App\Http\Controllers\SuperAdmin;
-
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; 
 use App\Models\Vendor;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class VendorController extends Controller
+class AdminVendorController extends Controller
 {
     /**
-     * Affiche la liste des vendeurs
+     * Affiche la liste des vendeurs avec filtres et statistiques.
      */
     public function index(Request $request)
     {
-        // Statistiques globales
+        // Statistiques globales pour les KPIs
         $stats = [
-            'total' => Vendor::count(),
+            'total'      => Vendor::count(),
             'individual' => Vendor::where('vendor_type', 'individual')->count(),
-            'company' => Vendor::where('vendor_type', 'company')->count(),
-            'pending' => Vendor::where('status', 'pending_review')->count(),
-            'approved' => Vendor::where('status', 'approved')->count(),
-            'suspended' => Vendor::where('status', 'suspended')->count(),
-            'rejected' => Vendor::where('status', 'rejected')->count(),
+            'company'    => Vendor::where('vendor_type', 'company')->count(),
+            'pending'    => Vendor::where('status', 'pending_review')->count(),
+            'approved'   => Vendor::where('status', 'approved')->count(),
+            'suspended'  => Vendor::where('status', 'suspended')->count(),
+            'rejected'   => Vendor::where('status', 'rejected')->count(),
         ];
 
         // Requête de base avec chargement de la relation user
         $query = Vendor::with('user');
 
-        // Filtre par type (individuel/entreprise)
+        // Filtres
         if ($request->filled('type')) {
             $query->where('vendor_type', $request->type);
         }
-
-        // Filtre par statut
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
-
-        // Recherche par nom, email, téléphone
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -53,34 +46,34 @@ class VendorController extends Controller
             });
         }
 
-        // Tri
-        $query->orderBy('created_at', 'desc');
+        // Tri et pagination
+        $vendors = $query->orderBy('created_at', 'desc')->paginate(15);
 
-        // Pagination
-        $vendors = $query->paginate(15);
-
-        return view('superadmin.vendors.index', compact('vendors', 'stats'));
+        // Vue partagée avec le superadmin
+        return view('admin.vendors.index', compact('vendors', 'stats'));
     }
 
     /**
-     * Affiche les détails d'un vendeur
+     * Affiche les détails d'un vendeur spécifique.
      */
     public function show($id)
     {
         $vendor = Vendor::with('user')->findOrFail($id);
-        return view('superadmin.vendors.show', compact('vendor'));
+        return view('admin.vendors.show', compact('vendor'));
     }
 
     /**
-     * Supprime un vendeur (soft delete ou hard delete selon votre logique)
+     * Supprime un vendeur (soft delete si le modèle utilise SoftDeletes).
      */
     public function destroy($id)
     {
         $vendor = Vendor::findOrFail($id);
-        
-        // Optionnel : supprimer également l'utilisateur associé
-        // $vendor->user->delete();
-        
+
+        // Optionnel : empêcher la suppression si le vendeur a des commandes en cours
+        // if ($vendor->orders()->where('status', '!=', 'completed')->exists()) {
+        //     return redirect()->back()->with('error', 'Impossible de supprimer un vendeur avec des commandes en cours.');
+        // }
+
         $vendor->delete();
 
         return redirect()->route('admin.vendors.index')
@@ -88,7 +81,7 @@ class VendorController extends Controller
     }
 
     /**
-     * Met à jour le statut d'un vendeur (approuver, suspendre, rejeter)
+     * Met à jour le statut d'un vendeur (approuvé, suspendu, rejeté, etc.).
      */
     public function updateStatus(Request $request, $id)
     {
@@ -100,8 +93,9 @@ class VendorController extends Controller
         $vendor->status = $request->status;
         $vendor->save();
 
-        // Optionnel : envoyer un email au vendeur pour l'informer du changement
+        // Option : envoyer un email de notification au vendeur
+        // $vendor->user->notify(new VendorStatusUpdated($vendor));
 
-        return redirect()->back()->with('success', 'Statut mis à jour.');
+        return redirect()->back()->with('success', 'Statut mis à jour avec succès.');
     }
 }

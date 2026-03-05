@@ -1,12 +1,10 @@
-@extends('superadmin.layouts.admin')
-
-@section('page-title', 'Détail du vendeur - KondoMarket')
-
+@extends('admin.layouts.admin')
+@section('title', 'Détail du vendeur #' . $vendor->id)
 @section('admin-content')
 <div class="container-fluid px-0">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Détail du vendeur #{{ $vendor->id }}</h2>
-        <a href="{{ route('superadmin.vendors.index') }}" class="btn btn-secondary">
+        <a href="{{ route('admin.vendors.index')}}" class="btn btn-secondary">
             <i class="bi bi-arrow-left"></i> Retour
         </a>
     </div>
@@ -145,7 +143,7 @@
                     <h6 class="m-0 fw-bold">Changer le statut</h6>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('superadmin.vendors.status', $vendor->id) }}" method="POST">
+                    <form action="{{ route('admin.vendors.status', $vendor->id) }}" method="POST">
                         @csrf
                         <div class="mb-3">
                             <select name="status" class="form-select">

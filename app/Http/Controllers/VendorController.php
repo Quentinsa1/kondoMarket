@@ -25,108 +25,161 @@ class VendorController extends Controller
     /**
      * Traiter l'inscription d'un nouveau vendeur
      */
-    public function register(Request $request)
-    {
-        // Validation des données communes
-        $validator = Validator::make($request->all(), [
-            'vendor_type' => 'required|in:individual,company',
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email',
-            'phone' => 'required|string|max:20|unique:vendors,phone',
-            'password' => 'required|string|min:8|confirmed',
-            'country' => 'required|string|size:2',
-            'city' => 'required|string|max:100',
-            'terms' => 'required|accepted',
-        ]);
-
-        // Validation conditionnelle selon le type
-        if ($request->vendor_type === 'individual') {
-            $validator->addRules([
-                'display_name' => 'required|string|max:255',
-                'activity_type' => 'required|in:selling,service,both',
-                'description' => 'nullable|string|max:500',
-                'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            ]);
+  public function register(Request $request)
+{
+    // --- Détection précoce des erreurs d'upload pour id_document (particulier) ---
+    if ($request->vendor_type === 'individual') {
+        // Cas 1 : le fichier est présent mais invalide (erreur PHP)
+        if ($request->hasFile('id_document')) {
+            $file = $request->file('id_document');
+            if (!$file->isValid()) {
+                $error = $file->getError();
+                if ($error === UPLOAD_ERR_INI_SIZE || $error === UPLOAD_ERR_FORM_SIZE) {
+                    return redirect()->back()
+                        ->withErrors(['id_document' => 'Le fichier est trop volumineux. Taille maximale autorisée : 5 Mo.'])
+                        ->withInput();
+                } else {
+                    return redirect()->back()
+                        ->withErrors(['id_document' => 'Erreur lors de l\'upload du fichier. Code: ' . $error])
+                        ->withInput();
+                }
+            }
         } else {
-            $validator->addRules([
-                'company_name' => 'required|string|max:255',
-                'company_category' => 'required|in:restaurant,boutique,service,artisan,ecommerce,other',
-                'company_description' => 'nullable|string|max:1000',
-                'address' => 'nullable|string|max:500',
-                'siret' => 'nullable|string|max:14',
-                'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
-            ]);
+            // Cas 2 : le fichier n'est pas présent mais $_FILES contient une entrée avec erreur
+            if (isset($_FILES['id_document']) && $_FILES['id_document']['error'] !== UPLOAD_ERR_NO_FILE) {
+                $error = $_FILES['id_document']['error'];
+                if ($error === UPLOAD_ERR_INI_SIZE || $error === UPLOAD_ERR_FORM_SIZE) {
+                    return redirect()->back()
+                        ->withErrors(['id_document' => 'Le fichier est trop volumineux. Taille maximale autorisée : 5 Mo.'])
+                        ->withInput();
+                } else {
+                    return redirect()->back()
+                        ->withErrors(['id_document' => 'Erreur lors de l\'upload du fichier. Code: ' . $error])
+                        ->withInput();
+                }
+            }
         }
+    }
 
-        if ($validator->fails()) {
+    // Validation des données communes
+    $validator = Validator::make($request->all(), [
+        'vendor_type' => 'required|in:individual,company',
+        'full_name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users,email',
+        'phone' => 'required|string|max:20|unique:vendors,phone',
+        'password' => 'required|string|min:8|confirmed',
+        'country' => 'required|string|size:2',
+        'city' => 'required|string|max:100',
+        'terms' => 'required|accepted',
+    ]);
+
+    // Validation conditionnelle selon le type
+    if ($request->vendor_type === 'individual') {
+        $validator->addRules([
+            'display_name' => 'required|string|max:255',
+            'activity_type' => 'required|in:selling,service,both',
+            'description' => 'nullable|string|max:500',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'id_document' => [
+                'required',
+                'file',
+                'mimes:jpeg,png,jpg,pdf',
+                'max:5120', // 5 Mo
+            ],
+        ]);
+    } else {
+        $validator->addRules([
+            'company_name' => 'required|string|max:255',
+            'company_category' => 'required|in:restaurant,boutique,service,artisan,ecommerce,other',
+            'company_description' => 'nullable|string|max:1000',
+            'address' => 'nullable|string|max:500',
+            // SIRET supprimé
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+        ]);
+    }
+
+    // Messages personnalisés en français
+    $validator->setCustomMessages([
+        'id_document.required' => 'La pièce d\'identité est obligatoire.',
+        'id_document.mimes' => 'Le fichier doit être de type : jpeg, png, jpg ou pdf.',
+        'id_document.max' => 'Le fichier ne doit pas dépasser 5 Mo.',
+        'display_name.required' => 'Le nom d\'affichage est requis.',
+        'activity_type.required' => 'Le type d\'activité est requis.',
+        // Ajoutez d'autres messages si nécessaire
+    ]);
+
+    if ($validator->fails()) {
+        return redirect()->back()
+            ->withErrors($validator)
+            ->withInput();
+    }
+
+    // Vérification finale que le fichier est bien valide (ne devrait pas arriver)
+    if ($request->vendor_type === 'individual' && $request->hasFile('id_document')) {
+        if (!$request->file('id_document')->isValid()) {
             return redirect()->back()
-                ->withErrors($validator)
+                ->withErrors(['id_document' => 'Le fichier est invalide.'])
                 ->withInput();
         }
+    }
 
-        // Création de l'utilisateur
-        $user = User::create([
-            'name' => $request->full_name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'vendor', // Assurez-vous que votre modèle User a ce champ
-        ]);
+    // Création de l'utilisateur
+    $user = User::create([
+        'name' => $request->full_name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'role' => 'vendor',
+    ]);
 
-        // Préparation des données du vendeur
-        $vendorData = [
-            'user_id' => $user->id,
-            'vendor_type' => $request->vendor_type,
-            'phone' => $request->phone,
-            'city' => $request->city,
-            'country' => $request->country,
-            'status' => 'pending', // Statut initial
-        ];
+    // Préparation des données du vendeur
+    $vendorData = [
+        'user_id' => $user->id,
+        'vendor_type' => $request->vendor_type,
+        'phone' => $request->phone,
+        'city' => $request->city,
+        'country' => $request->country,
+        'status' => 'pending_review', // Document fourni => en attente de vérification
+    ];
 
-        // Données spécifiques au type
-        if ($request->vendor_type === 'individual') {
-            $vendorData['display_name'] = $request->display_name;
-            $vendorData['activity_type'] = $request->activity_type;
-            $vendorData['description'] = $request->description;
+    if ($request->vendor_type === 'individual') {
+        $vendorData['display_name'] = $request->display_name;
+        $vendorData['activity_type'] = $request->activity_type;
+        $vendorData['description'] = $request->description;
 
-            // Gestion de l'avatar
-            if ($request->hasFile('avatar')) {
-                $path = $request->file('avatar')->store('vendors/avatars', 'public');
-                $vendorData['avatar_path'] = $path;
-            }
-        } else {
-            $vendorData['company_name'] = $request->company_name;
-            $vendorData['company_category'] = $request->company_category;
-            $vendorData['description'] = $request->company_description;
-            $vendorData['address'] = $request->address;
-            $vendorData['siret'] = $request->siret;
-
-            // Gestion du logo
-            if ($request->hasFile('logo')) {
-                $path = $request->file('logo')->store('vendors/logos', 'public');
-                $vendorData['logo_path'] = $path;
-            }
-
-            // Gestion de l'image de couverture
-            if ($request->hasFile('cover_image')) {
-                $path = $request->file('cover_image')->store('vendors/covers', 'public');
-                $vendorData['cover_path'] = $path;
-            }
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('vendors/avatars', 'public');
+            $vendorData['avatar_path'] = $path;
         }
 
-        // Création du vendeur
-        $vendor = Vendor::create($vendorData);
+        // Stockage de la pièce d'identité (toujours présente ici)
+        $path = $request->file('id_document')->store('vendors/documents/identity', 'public');
+        $vendorData['id_document_path'] = $path;
+    } else {
+        $vendorData['company_name'] = $request->company_name;
+        $vendorData['company_category'] = $request->company_category;
+        $vendorData['description'] = $request->company_description;
+        $vendorData['address'] = $request->address;
 
-        // Connexion automatique de l'utilisateur
-        Auth::login($user);
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('vendors/logos', 'public');
+            $vendorData['logo_path'] = $path;
+        }
 
-        // Envoyer un email de bienvenue (à implémenter)
-
-        // Redirection vers la page de succès
-        return redirect()->route('vendor.register.success')
-            ->with('success', 'Votre inscription a été soumise avec succès !')
-            ->with('vendor', $vendor);
+        if ($request->hasFile('cover_image')) {
+            $path = $request->file('cover_image')->store('vendors/covers', 'public');
+            $vendorData['cover_path'] = $path;
+        }
     }
+
+    $vendor = Vendor::create($vendorData);
+
+    Auth::login($user);
+
+    return redirect()->route('vendor.register.success')
+        ->with('success', 'Votre inscription a été soumise avec succès !')
+        ->with('vendor', $vendor);
+}
 
     /**
      * Afficher la page de succès après inscription
@@ -165,45 +218,51 @@ class VendorController extends Controller
      * Traiter l'upload des documents de vérification
      */
     public function uploadDocuments(Request $request)
-    {
-        $vendor = Auth::user()->vendor;
+{
+    $vendor = Auth::user()->vendor;
 
-        if (!$vendor) {
-            return redirect()->route('home');
-        }
-
-        $validator = Validator::make($request->all(), [
-            'id_document' => 'required|file|mimes:pdf,jpeg,png,jpg|max:5120',
-            'proof_of_address' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        // Upload du document d'identité
-        if ($request->hasFile('id_document')) {
-            $path = $request->file('id_document')->store('vendors/documents/identity', 'public');
-            $vendor->id_document_path = $path;
-        }
-
-        // Upload de la preuve d'adresse (optionnel)
-        if ($request->hasFile('proof_of_address')) {
-            $path = $request->file('proof_of_address')->store('vendors/documents/address', 'public');
-            $vendor->address_proof_path = $path;
-        }
-
-        // Changer le statut en "en attente de vérification"
-        $vendor->status = 'pending_review';
-        $vendor->save();
-
-        // Notifier l'administrateur (à implémenter)
-
-        return redirect()->route('seller.dashboard')
-            ->with('success', 'Vos documents ont été soumis. Notre équipe les vérifiera sous 48h.');
+    if (!$vendor) {
+        return redirect()->route('home');
     }
+
+    $validator = Validator::make($request->all(), [
+        // Rendre id_document optionnel si déjà fourni
+        'id_document' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
+        'proof_of_address' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
+    ]);
+
+    if ($validator->fails()) {
+        return redirect()->back()
+            ->withErrors($validator)
+            ->withInput();
+    }
+
+    // Mise à jour du document d'identité seulement s'il est fourni
+    if ($request->hasFile('id_document')) {
+        // Supprimer l'ancien fichier si existant
+        if ($vendor->id_document_path) {
+            Storage::disk('public')->delete($vendor->id_document_path);
+        }
+        $path = $request->file('id_document')->store('vendors/documents/identity', 'public');
+        $vendor->id_document_path = $path;
+    }
+
+    // Upload de la preuve d'adresse
+    if ($request->hasFile('proof_of_address')) {
+        if ($vendor->address_proof_path) {
+            Storage::disk('public')->delete($vendor->address_proof_path);
+        }
+        $path = $request->file('proof_of_address')->store('vendors/documents/address', 'public');
+        $vendor->address_proof_path = $path;
+    }
+
+    // Changer le statut en "en attente de vérification"
+    $vendor->status = 'pending_review';
+    $vendor->save();
+
+    return redirect()->route('seller.dashboard')
+        ->with('success', 'Vos documents ont été soumis. Notre équipe les vérifiera sous 48h.');
+}
 
    /**
  * Afficher le tableau de bord vendeur
