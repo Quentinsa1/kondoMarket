@@ -81,7 +81,7 @@
                             <i class="bi bi-lightning-charge"></i> Achat rapide
                         </div>
    <div class="sidebar-card-body">
-    <p>Signalez un vendeur, un produit ou tout comportement abusif sur Kondo Market.</p>
+    <p>Signalez un vendeur, un produit ou tout comportement abusif sur aslazmarket.</p>
     
     @auth
         <!-- Utilisateur connecté -->

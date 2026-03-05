@@ -14,7 +14,7 @@
                     <div class="row align-items-center">
                         <div class="col">
                             <div class="text-xs text-primary text-uppercase fw-bold mb-1">Utilisateurs</div>
-                            <div class="h3 mb-0">12 345</div>
+                            <div class="h3 mb-0">{{ number_format($stats['users_total']) }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-people fs-1 text-gray-300"></i>
@@ -29,7 +29,7 @@
                     <div class="row align-items-center">
                         <div class="col">
                             <div class="text-xs text-success text-uppercase fw-bold mb-1">Vendeurs actifs</div>
-                            <div class="h3 mb-0">234</div>
+                            <div class="h3 mb-0">{{ number_format($stats['vendors_active']) }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-shop fs-1 text-gray-300"></i>
@@ -44,7 +44,7 @@
                     <div class="row align-items-center">
                         <div class="col">
                             <div class="text-xs text-info text-uppercase fw-bold mb-1">Produits</div>
-                            <div class="h3 mb-0">5 678</div>
+                            <div class="h3 mb-0">{{ number_format($stats['products_total']) }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-box-seam fs-1 text-gray-300"></i>
@@ -53,28 +53,14 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card stat-card border-left-warning shadow h-100">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <div class="text-xs text-warning text-uppercase fw-bold mb-1">Commandes aujourd'hui</div>
-                            <div class="h3 mb-0">45</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-cart-check fs-1 text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+       
         <div class="col-xl-3 col-md-6">
             <div class="card stat-card border-left-danger shadow h-100">
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col">
                             <div class="text-xs text-danger text-uppercase fw-bold mb-1">Revenus totaux</div>
-                            <div class="h3 mb-0">45 678 €</div>
+                            <div class="h3 mb-0">12000 f</div>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-cash-stack fs-1 text-gray-300"></i>
@@ -83,21 +69,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card stat-card border-left-secondary shadow h-100">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <div class="text-xs text-secondary text-uppercase fw-bold mb-1">Commandes totales</div>
-                            <div class="h3 mb-0">3 456</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-bag-check fs-1 text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+       
     </div>
 
     <!-- Graphiques -->
@@ -105,7 +77,7 @@
         <div class="col-lg-6">
             <div class="card shadow">
                 <div class="card-header">
-                    <h6 class="m-0 fw-bold text-primary">Ventes mensuelles (2025)</h6>
+                    <h6 class="m-0 fw-bold text-primary">Ventes mensuelles ({{ $currentYear }})</h6>
                 </div>
                 <div class="card-body">
                     <canvas id="salesChart" style="width:100%; max-height:300px;"></canvas>
@@ -115,7 +87,7 @@
         <div class="col-lg-6">
             <div class="card shadow">
                 <div class="card-header">
-                    <h6 class="m-0 fw-bold text-primary">Inscriptions mensuelles (2025)</h6>
+                    <h6 class="m-0 fw-bold text-primary">Inscriptions mensuelles ({{ $currentYear }})</h6>
                 </div>
                 <div class="card-body">
                     <canvas id="registrationsChart" style="width:100%; max-height:300px;"></canvas>
@@ -123,6 +95,37 @@
             </div>
         </div>
     </div>
+
+    <!-- Liste des derniers vendeurs (optionnel) -->
+    @if($recentVendors->count() > 0)
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h6 class="m-0 fw-bold">Derniers vendeurs inscrits</h6>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        @foreach($recentVendors as $vendor)
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ $vendor->name }}</strong><br>
+                                <small class="text-muted">{{ $vendor->created_at->diffForHumans() }}</small>
+                            </div>
+                            <span class="badge bg-{{ $vendor->status === 'approved' ? 'success' : ($vendor->status === 'pending_review' ? 'warning' : 'secondary') }}">
+                                {{ $vendor->status }}
+                            </span>
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
+                <div class="card-footer text-end">
+                    <a href="{{ route('admin.vendors.index') }}">Voir tous <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 @endsection
 
@@ -136,7 +139,7 @@
             labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
             datasets: [{
                 label: 'Ventes (€)',
-                data: [12000, 15000, 18000, 22000, 25000, 28000, 30000, 32000, 35000, 38000, 40000, 45000],
+                data: @json(15),
                 borderColor: 'rgb(75, 192, 192)',
                 tension: 0.1
             }]
@@ -151,7 +154,9 @@
             labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
             datasets: [{
                 label: 'Inscriptions',
-                data: [150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700],
+                data: @json(
+                10
+                ),
                 backgroundColor: 'rgba(54, 162, 235, 0.5)'
             }]
         }

@@ -49,7 +49,7 @@
                                     </div>
                                     <div class="product-info">
                                         <div class="product-name">Produit dans catégorie {{ $j+1 }}</div>
-                                        <div class="product-price">149,99€ <span class="product-original-price">199,99€</span></div>
+                                        <div class="product-price">149,99FCFA <span class="product-original-price">199,99FCFA</span></div>
                                         <div class="product-moq">MOQ: 100 pièces</div>
                                         <div class="product-vendor">
                                             Fournisseur vérifié

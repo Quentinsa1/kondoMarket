@@ -3,9 +3,9 @@
     <div class="container-xxl">
         <div class="row">
             <div class="col-lg-3 col-md-6 mb-4">
-                <h4 class="footer-section-title">À propos de Kondo Market</h4>
+                <h4 class="footer-section-title">À propos de aslazmarket</h4>
                 <p class="footer-about">
-                    Kondo Market est la marketplace B2B & B2C leader pour le commerce international. 
+                    aslazmarket est la marketplace B2B & B2C leader pour le commerce international. 
                     Nous connectons les acheteurs avec des fournisseurs vérifiés à travers le monde.
                 </p>
                 <div class="trust-badges">
@@ -67,7 +67,7 @@
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <div class="mb-3 mb-md-0">
-                        &copy; 2024 Kondo Market. Tous droits réservés.
+                        &copy; 2024 aslazmarket. Tous droits réservés.
                         <a href="#" class="text-white ms-3">Confidentialité</a> | 
                         <a href="#" class="text-white">Conditions</a>
                     </div>

@@ -19,7 +19,7 @@
                         </div>
                         <div class="product-info">
                             <div class="product-name">Recommandation {{ $i+1 }}</div>
-                            <div class="product-price">{{ rand(20, 200) }},99€</div>
+                            <div class="product-price">{{ rand(20, 200) }},99FCFA</div>
                             <div class="product-moq">MOQ: {{ rand(20, 200) }} pièces</div>
                             <div class="product-vendor">
                                 Vendeur recommandé

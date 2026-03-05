@@ -23,7 +23,7 @@
                         </div>
                         <div class="product-info">
                             <div class="product-name">Nouveau produit {{ $i+1 }}</div>
-                            <div class="product-price">{{ rand(50, 500) }},99€</div>
+                            <div class="product-price">{{ rand(50, 500) }},99FCFA</div>
                             <div class="product-moq">MOQ: {{ rand(10, 100) }} pièces</div>
                             <div class="product-vendor">
                                 Nouveau vendeur

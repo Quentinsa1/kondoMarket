@@ -7,7 +7,7 @@
                     <div class="logo-icon">
                         <i class="bi bi-shop"></i>
                     </div>
-                    Kondo<span>Market</span>
+                    aslaz<span>market</span>
                 </a>
             </div>
             

@@ -23,7 +23,7 @@
                         </div>
                         <div class="product-info">
                             <div class="product-name">Produit tendance {{ $i+1 }}</div>
-                            <div class="product-price">99,99€</div>
+                            <div class="product-price">99,99FCFA</div>
                             <div class="product-moq">MOQ: 50 pièces</div>
                             <div class="product-vendor">
                                 Vendeur vérifié

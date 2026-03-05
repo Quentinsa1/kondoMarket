@@ -1,6 +1,6 @@
 @extends('template.template')
 
-@section('title', 'Kondo Market - Marketplace B2B & B2C Internationale')
+@section('title', 'aslazmarket - Marketplace B2B & B2C Internationale')
 
 @section('content')
     @include('home.sections.hero')

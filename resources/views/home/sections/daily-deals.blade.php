@@ -26,7 +26,7 @@
                         </div>
                         <div class="product-info">
                             <div class="product-name">Offre spéciale {{ $i+1 }}</div>
-                            <div class="product-price">79,99€ <span class="product-original-price">114,99€</span></div>
+                            <div class="product-price">79,99FCFA <span class="product-original-price">114,99FCFA</span></div>
                             <div class="product-moq">MOQ: 25 pièces</div>
                             <div class="product-vendor">
                                 Vendeur certifié
