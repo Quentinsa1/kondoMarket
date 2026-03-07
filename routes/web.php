@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 // ===== Routes publiques et communes =====
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/help', [HomeController::class, 'help'])->name('help');
+Route::get('/confidentiality', [HomeController::class, 'confidentiality'])->name('confidentiality');
 
 // Routes des catégories
 Route::prefix('categories')->group(function () {
@@ -188,6 +189,10 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+
+Route::get('/support', function () {
+    return view('home.support');
+})->name('support');
 // ===== Inclusion des routes admin et superadmin =====
 require __DIR__.'/admin.php';
 require __DIR__.'/superadmin.php';

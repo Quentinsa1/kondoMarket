@@ -1558,4 +1558,26 @@
                 transition-duration: 0.01ms !important;
             }
         }
-   
+   /* Styles pour la page support */
+.support-page .card {
+    transition: var(--transition);
+}
+.support-page .card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg) !important;
+}
+.accordion-button:not(.collapsed) {
+    background-color: var(--light-color) !important;
+    color: var(--primary-color) !important;
+}
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: var(--primary-color);
+}
+.privacy-page ul {
+    padding-left: 1.5rem;
+    list-style-type: disc;
+}
+.privacy-page li {
+    margin-bottom: 0.5rem;
+}

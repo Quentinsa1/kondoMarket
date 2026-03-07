@@ -41,7 +41,13 @@ class HomeController extends Controller
         
         return view('home.index', $data);
     }
-    
+
+    // confidentialité
+    public function confidentiality()
+    {
+        return view('home.confidentiality');
+    }
+
     /**
      * Récupérer les catégories principales
      */
@@ -66,7 +72,7 @@ class HomeController extends Controller
         ];
     }
     public function help(){
-        return view('help.index');
+        return view('home.help');
     }
     /**
      * Récupérer les catégories vedettes
