@@ -122,5 +122,5 @@
 @endsection
 
 @push('scripts')
-    <!-- Aucun script spécifique requis pour cette page -->
+
 @endpush
