@@ -23,9 +23,9 @@
                             <i class="bi bi-plus-circle me-1"></i> Ajouter un produit
                         </a>
                         <!-- Bouton Recharger mon compte -->
-                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#rechargeModal">
-                            <i class="bi bi-wallet2 me-1"></i> Recharger mon compte
-                        </button>
+                        <a href="{{ route('wallet.recharge.form') }}" class="btn btn-warning">
+    <i class="bi bi-wallet2 me-1"></i> Recharger mon compte
+</a>
                         <a href="#contact-admin" class="btn btn-outline-secondary">
                             <i class="bi bi-headset me-1"></i> Contacter l'admin
                         </a>
@@ -926,7 +926,6 @@
         }
     }
 </style>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // ===== GESTION DES MONTANTS =====
@@ -1044,8 +1043,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         modal.hide();
                         
                         // Notification de succès
-                        alert(`✅ Rechargement de ${formatNumber(amount)} FCFA effectué avec succès via Visa !\n\n💳 Carte se terminant par ****${last4}\n📧 Une confirmation a été envoyée à votre email.`);
-                    }
+fetch('/wallet/recharge', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+    },
+    body: JSON.stringify({
+        amount: amount,
+        phone: phone
+    })
+})
+.then(res => res.json())
+.then(data => {
+    window.location.href = data.url;
+});                    }
                     
                     // Réinitialiser le formulaire
                     form.reset();

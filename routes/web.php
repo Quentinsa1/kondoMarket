@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\superAdmin\VendorController as SuperAdminVendorController;
 use App\Http\Controllers\superAdmin\ProductController as SuperAdminProductController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\WalletController;
+
 
 // ===== Routes publiques et communes =====
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -151,6 +153,12 @@ Route::prefix('vendors')->group(function () {
 
 // Gestion des produits par les vendeurs (authentifiés et approuvés)
 Route::middleware(['auth', 'seller.auth', 'seller.approved'])->prefix('seller')->group(function () {
+
+
+
+     Route::get('/deposit', [App\Http\Controllers\Seller\DepositController::class, 'index'])->name('seller.deposit');
+    Route::post('/deposit/momo', [App\Http\Controllers\Seller\DepositController::class, 'processMomo'])->name('seller.deposit.momo');
+    Route::post('/deposit/visa', [App\Http\Controllers\Seller\DepositController::class, 'processVisa'])->name('seller.deposit.visa');
     Route::resource('products', \App\Http\Controllers\Seller\ProductController::class)
         ->names([
             'index' => 'seller.products.index',
@@ -193,6 +201,15 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/support', function () {
     return view('home.support');
 })->name('support');
+
+Route::get('/seller/recharge', [WalletController::class, 'showRecharge'])
+    ->name('wallet.recharge.form');
+
+Route::post('/seller/recharge', [WalletController::class, 'recharge'])
+    ->name('wallet.recharge'); 
+
+    Route::get('/wallet/callback', [WalletController::class, 'callback'])
+    ->name('wallet.callback');
 // ===== Inclusion des routes admin et superadmin =====
 require __DIR__.'/admin.php';
 require __DIR__.'/superadmin.php';
